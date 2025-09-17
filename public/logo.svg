@@ -1,0 +1,13 @@
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="80" fill="#FFD700"/>
+  <rect x="85" y="15" width="30" height="20" rx="3" fill="#2D5016"/>
+  <rect x="87" y="12" width="26" height="3" rx="1.5" fill="#2D5016"/>
+  <rect x="95" y="8" width="10" height="4" rx="2" fill="#2D5016"/>
+  <path d="M92 20 L98 20 L100 22 L98 24 L92 24 Z" fill="#FFD700"/>
+  <path d="M100 22 L105 22" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M80 40 Q90 35 100 40 T120 40" stroke="#2D5016" stroke-width="2" fill="none"/>
+  <path d="M85 45 Q95 40 105 45 T125 45" stroke="#2D5016" stroke-width="2" fill="none"/>
+  <path d="M90 50 Q100 45 110 50 T130 50" stroke="#2D5016" stroke-width="2" fill="none"/>
+  <text x="100" y="65" font-family="cursive" font-size="16" font-weight="bold" text-anchor="middle" fill="#2D5016">Go Luxus</text>
+  <text x="100" y="75" font-family="cursive" font-size="8" text-anchor="middle" fill="#000000">art of traveling</text>
+</svg>
