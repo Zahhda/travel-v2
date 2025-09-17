@@ -9,8 +9,8 @@ import DatePicker from "@/components/DatePicker";
 import PaymentPopup from "@/components/PaymentPopup";
 import axios from "axios";
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Ensure proper rendering
+export const dynamic = 'auto';
 
 const HotelDetail = () => {
     const params = useParams();
@@ -146,18 +146,23 @@ const HotelDetail = () => {
 
     const handlePaymentSuccess = async () => {
         try {
-            const result = await createBooking(hotel._id, currentBookingData);
-            setBookingId(result?.bookingId || 'BOOK-' + Date.now());
-            setBookingStep('confirmed');
+            console.log('Starting booking creation with data:', currentBookingData);
             
-            // Don't close the popup here - let the popup handle the redirect
-            // The popup will close itself after redirecting
+            const result = await createBooking(hotel._id, currentBookingData);
+            console.log('Booking creation result:', result);
+            
+            if (result && result.bookingId) {
+                setBookingId(result.bookingId);
+                setBookingStep('confirmed');
+                console.log('Booking confirmed successfully');
+                return result; // Return the result for PaymentPopup to check
+            } else {
+                throw new Error('No booking ID returned');
+            }
             
         } catch (error) {
             console.error('Error creating booking:', error);
-            alert('Failed to create booking. Please try again.');
-            // Close popup on error
-            setShowPaymentPopup(false);
+            throw error; // Re-throw error for PaymentPopup to handle
         }
     };
 

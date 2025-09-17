@@ -6,8 +6,8 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useAppContext } from "@/context/AppContext";
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Ensure proper rendering
+export const dynamic = 'auto';
 
 const Cart = () => {
 

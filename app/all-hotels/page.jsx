@@ -6,8 +6,8 @@ import SidebarFilter from "@/components/SidebarFilter";
 import { useAppContext } from "@/context/AppContext";
 import { useState, useEffect } from "react";
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Ensure proper rendering
+export const dynamic = 'auto';
 
 const AllHotels = () => {
   const { hotels } = useAppContext();

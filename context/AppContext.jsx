@@ -69,9 +69,10 @@ export const AppContextProvider = (props) => {
     const createBooking = async (hotelId, bookingData) => {
 
         if (!user) {
-            return toast('Please login',{
+            toast('Please login',{
                 icon: '⚠️',
               })
+            throw new Error('User not logged in')
         }
 
         try {
@@ -84,12 +85,19 @@ export const AppContextProvider = (props) => {
             
             if (data.success) {
                 toast.success('Booking created successfully')
-                return data.booking
+                return {
+                    booking: data.booking,
+                    bookingId: data.bookingId,
+                    message: data.message
+                }
             } else {
                 toast.error(data.message)
+                throw new Error(data.message)
             }
         } catch (error) {
+            console.error('Booking creation error:', error)
             toast.error(error.message)
+            throw error
         }
     }
 

@@ -94,18 +94,24 @@ const PaymentPopup = ({ isOpen, onClose, onSuccess, bookingData }) => {
     console.log('PaymentPopup: Completing payment and creating booking');
     
     try {
-      await onSuccess();
-      console.log('PaymentPopup: Booking created successfully');
+      const result = await onSuccess();
+      console.log('PaymentPopup: Booking creation result:', result);
       
-      // Wait a moment then redirect
-      setTimeout(() => {
-        console.log('PaymentPopup: Redirecting to bookings page');
-        onClose();
-        window.location.href = '/my-bookings';
-      }, 1000);
+      if (result && result.bookingId) {
+        console.log('PaymentPopup: Booking created successfully');
+        
+        // Wait a moment then redirect
+        setTimeout(() => {
+          console.log('PaymentPopup: Redirecting to bookings page');
+          onClose();
+          window.location.href = '/my-bookings';
+        }, 1000);
+      } else {
+        throw new Error('Booking creation failed - no booking ID returned');
+      }
     } catch (error) {
       console.error('PaymentPopup: Error completing payment:', error);
-      alert('Failed to complete booking. Please try again.');
+      alert(`Failed to complete booking: ${error.message || 'Please try again.'}`);
       onClose();
     }
   };
