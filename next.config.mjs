@@ -14,6 +14,10 @@ const nextConfig = {
             },
         ],
     },
+    // Ensure proper App Router handling
+    trailingSlash: false,
+    // Ensure proper App Router behavior
+    output: 'standalone',
 };
 
 export default nextConfig;

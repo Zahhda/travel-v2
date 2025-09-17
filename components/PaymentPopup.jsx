@@ -199,14 +199,42 @@ const PaymentPopup = ({ isOpen, onClose, onSuccess, bookingData }) => {
 
             {/* Booking Details */}
             {bookingData && (
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                 <h3 className="font-semibold text-gray-900">Booking Summary</h3>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p><span className="font-medium">Hotel:</span> {bookingData.hotelName}</p>
-                  <p><span className="font-medium">Room:</span> {bookingData.roomType}</p>
-                  <p><span className="font-medium">Check-in:</span> {new Date(bookingData.checkInDate).toLocaleDateString()}</p>
-                  <p><span className="font-medium">Check-out:</span> {new Date(bookingData.checkOutDate).toLocaleDateString()}</p>
-                  <p><span className="font-medium">Total:</span> ${bookingData.amount}</p>
+                <div className="text-sm text-gray-600 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">Hotel:</span>
+                    <span className="text-right">{bookingData.hotelName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Room Type:</span>
+                    <span className="text-right">{bookingData.roomType}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Check-in:</span>
+                    <span className="text-right">{new Date(bookingData.checkInDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Check-out:</span>
+                    <span className="text-right">{new Date(bookingData.checkOutDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Nights:</span>
+                    <span className="text-right">{bookingData.totalNights}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Rooms:</span>
+                    <span className="text-right">{bookingData.rooms}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Guests:</span>
+                    <span className="text-right">{bookingData.guests}</span>
+                  </div>
+                  <hr className="border-gray-300" />
+                  <div className="flex justify-between text-base font-semibold">
+                    <span>Total Amount:</span>
+                    <span className="text-green-600">${bookingData.amount?.toFixed(2) || '0.00'}</span>
+                  </div>
                 </div>
               </div>
             )}

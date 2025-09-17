@@ -9,6 +9,9 @@ import DatePicker from "@/components/DatePicker";
 import PaymentPopup from "@/components/PaymentPopup";
 import axios from "axios";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const HotelDetail = () => {
     const params = useParams();
     const { user, createBooking } = useAppContext();
@@ -60,21 +63,81 @@ const HotelDetail = () => {
             return;
         }
 
-        if (!selectedRoomType || !bookingData.checkInDate || !bookingData.checkOutDate) {
-            alert('Please fill in all required fields');
+        // Enhanced validation
+        if (!selectedRoomType) {
+            alert('Please select a room type');
+            return;
+        }
+
+        if (!bookingData.checkInDate) {
+            alert('Please select a check-in date');
+            return;
+        }
+
+        if (!bookingData.checkOutDate) {
+            alert('Please select a check-out date');
+            return;
+        }
+
+        // Validate guest information
+        if (!bookingData.guestInfo.firstName.trim()) {
+            alert('Please enter your first name');
+            return;
+        }
+
+        if (!bookingData.guestInfo.lastName.trim()) {
+            alert('Please enter your last name');
+            return;
+        }
+
+        if (!bookingData.guestInfo.email.trim()) {
+            alert('Please enter your email address');
+            return;
+        }
+
+        if (!bookingData.guestInfo.phone.trim()) {
+            alert('Please enter your phone number');
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(bookingData.guestInfo.email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+
+        // Validate dates
+        const checkIn = new Date(bookingData.checkInDate);
+        const checkOut = new Date(bookingData.checkOutDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (checkIn < today) {
+            alert('Check-in date cannot be in the past');
+            return;
+        }
+
+        if (checkOut <= checkIn) {
+            alert('Check-out date must be after check-in date');
             return;
         }
 
         const selectedRoom = hotel.roomTypes.find(room => room.type === selectedRoomType);
-        const totalNights = Math.ceil((new Date(bookingData.checkOutDate) - new Date(bookingData.checkInDate)) / (1000 * 60 * 60 * 24));
-        const totalAmount = selectedRoom.price * totalNights * bookingData.rooms;
+        const totalNights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+        const baseAmount = selectedRoom.price * totalNights * bookingData.rooms;
+        const tax = Math.round(baseAmount * 0.1); // 10% tax
+        const totalAmount = baseAmount + tax;
 
         const bookingInfo = {
             ...bookingData,
             totalNights,
             amount: totalAmount,
+            baseAmount,
+            tax,
             roomType: selectedRoomType,
-            hotelName: hotel.name
+            hotelName: hotel.name,
+            hotelId: hotel._id
         };
 
         setCurrentBookingData(bookingInfo);

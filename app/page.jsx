@@ -8,6 +8,9 @@ import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const Home = () => {
   const { router } = useAppContext();
   const [searchData, setSearchData] = useState({
