@@ -6,9 +6,34 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useAppContext } from "@/context/AppContext";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const Cart = () => {
 
   const { hotels, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
+
+  // Safety check for static generation
+  if (!hotels || !cartItems) {
+    return (
+      <>
+        <Navbar />
+        <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-8 border-b border-gray-500/30 pb-6">
+              <p className="text-2xl md:text-3xl text-gray-500">
+                Your <span className="font-medium text-orange-600">Cart</span>
+              </p>
+              <p className="text-lg md:text-xl text-gray-500/80">0 Items</p>
+            </div>
+            <div className="text-center py-8">
+              <p className="text-gray-500">Loading cart...</p>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

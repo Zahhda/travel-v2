@@ -11,6 +11,21 @@ const OrderSummary = () => {
 
   const [userAddresses, setUserAddresses] = useState([]);
 
+  // Safety check for static generation
+  if (!getCartCount || !getCartAmount || !cartItems) {
+    return (
+      <div className="w-full md:w-96 bg-gray-500/5 p-5">
+        <h2 className="text-xl md:text-2xl font-medium text-gray-700">
+          Order Summary
+        </h2>
+        <hr className="border-gray-500/30 my-5" />
+        <div className="text-center py-8">
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   const fetchUserAddresses = async () => {
     try {
       

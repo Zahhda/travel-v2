@@ -151,6 +151,17 @@ export const AppContextProvider = (props) => {
         return total;
     }
 
+    const getCartAmount = () => {
+        let totalAmount = 0;
+        for (const itemId in cartItems) {
+            const product = hotels.find(hotel => hotel._id === itemId);
+            if (product && cartItems[itemId] > 0) {
+                totalAmount += product.offerPrice * cartItems[itemId];
+            }
+        }
+        return Math.floor(totalAmount * 100) / 100;
+    }
+
     useEffect(() => {
         fetchHotelData()
     }, [])
@@ -170,7 +181,7 @@ export const AppContextProvider = (props) => {
         bookings, setBookings,
         createBooking, updateBooking,
         getBookingCount, getBookingAmount,
-        cartItems, addToCart, updateCartQuantity, getCartCount
+        cartItems, setCartItems, addToCart, updateCartQuantity, getCartCount, getCartAmount
     }
 
     return (
