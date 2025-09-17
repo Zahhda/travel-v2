@@ -23,6 +23,7 @@ export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState(false)
     const [isHotelManager, setIsHotelManager] = useState(false)
     const [bookings, setBookings] = useState({})
+    const [cartItems, setCartItems] = useState({})
 
     const fetchHotelData = async () => {
         try {
@@ -127,6 +128,29 @@ export const AppContextProvider = (props) => {
         return Math.floor(totalAmount * 100) / 100;
     }
 
+    // Cart functions (for compatibility)
+    const addToCart = (itemId) => {
+        setCartItems(prev => ({
+            ...prev,
+            [itemId]: (prev[itemId] || 0) + 1
+        }));
+    }
+
+    const updateCartQuantity = (itemId, quantity) => {
+        setCartItems(prev => ({
+            ...prev,
+            [itemId]: quantity
+        }));
+    }
+
+    const getCartCount = () => {
+        let total = 0;
+        for (const itemId in cartItems) {
+            total += cartItems[itemId] || 0;
+        }
+        return total;
+    }
+
     useEffect(() => {
         fetchHotelData()
     }, [])
@@ -145,7 +169,8 @@ export const AppContextProvider = (props) => {
         hotels, fetchHotelData,
         bookings, setBookings,
         createBooking, updateBooking,
-        getBookingCount, getBookingAmount
+        getBookingCount, getBookingAmount,
+        cartItems, addToCart, updateCartQuantity, getCartCount
     }
 
     return (
