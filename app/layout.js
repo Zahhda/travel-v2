@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${poppins.className} antialiased text-gray-800`} >
+        <body className={`${poppins.className} antialiased app-shell`}>
           <Toaster />
           <AppContextProvider>
             {children}

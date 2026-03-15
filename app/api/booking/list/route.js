@@ -1,36 +1,26 @@
-import connectDB from '@/config/db'
-import Booking from '@/models/Order'
-import Hotel from '@/models/Product'
+﻿import { getAllDemoBookings, getDemoBookings } from '@/lib/demoDataStore'
+import { getAuth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 export async function GET(request) {
     try {
-
-        await connectDB()
-
+        const { userId } = getAuth(request)
         const { searchParams } = new URL(request.url)
-        const userId = searchParams.get('userId')
+        const queryUserId = searchParams.get('userId')
 
-        if (!userId) {
-            return NextResponse.json({ success: false, message: 'User ID is required' })
-        }
+        const effectiveUser = queryUserId || userId
+        const bookings = effectiveUser
+            ? getDemoBookings(effectiveUser)
+            : getAllDemoBookings()
 
-        const bookings = await Booking.find({ userId }).sort({ date: -1 })
-
-        // Populate hotel details for each booking
-        const populatedBookings = await Promise.all(
-            bookings.map(async (booking) => {
-                const hotel = await Hotel.findById(booking.hotel)
-                return {
-                    ...booking.toObject(),
-                    hotelDetails: hotel
-                }
-            })
-        )
-        
-        return NextResponse.json({ success: true, bookings: populatedBookings })
-
+        return NextResponse.json({
+            success: true,
+            bookings
+        })
     } catch (error) {
-        return NextResponse.json({ success: false, message: error.message })
+        return NextResponse.json({
+            success: false,
+            message: error.message
+        })
     }
 }

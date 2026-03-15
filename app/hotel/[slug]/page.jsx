@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useParams } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 import { useState, useEffect } from "react";
@@ -170,10 +170,10 @@ const HotelDetail = () => {
         return (
             <>
                 <Navbar />
-                <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                     <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
-                        <p className="text-gray-600">Loading hotel details...</p>
+                        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-amber-500"></div>
+                        <p className="text-slate-600">Loading hotel details...</p>
                     </div>
                 </div>
                 <Footer />
@@ -185,13 +185,13 @@ const HotelDetail = () => {
         return (
             <>
                 <Navbar />
-                <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Hotel Not Found</h2>
-                        <p className="text-gray-600 mb-6">The hotel you're looking for doesn't exist.</p>
+                        <h2 className="text-2xl font-black text-slate-900 mb-4">Hotel Not Found</h2>
+                        <p className="text-slate-600 mb-6">The hotel you're looking for doesn't exist.</p>
                         <a
                             href="/all-hotels"
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                            className="btn-primary py-3 px-6 rounded-xl transition-colors"
                         >
                             Browse All Hotels
                         </a>
@@ -205,14 +205,14 @@ const HotelDetail = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Hotel Header */}
                     <div className="mb-8">
-                        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">{hotel.name}</h1>
-                        <div className="flex items-center gap-4 text-gray-600">
+                        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4">{hotel.name}</h1>
+                        <div className="flex items-center gap-4 text-slate-600">
                             <div className="flex items-center gap-1">
-                                <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
                                 <span className="font-semibold">{hotel.rating}</span>
@@ -228,7 +228,7 @@ const HotelDetail = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                         {/* Main Image */}
                         <div className="lg:col-span-2">
-                            <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-xl">
                                 <Image
                                     src={hotel.images?.[selectedImageIndex] || hotel.images?.[0] || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop'}
                                     alt={hotel.name}
@@ -244,7 +244,7 @@ const HotelDetail = () => {
                                 <div
                                     key={index}
                                     className={`relative h-24 lg:h-32 rounded-xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 ${
-                                        selectedImageIndex === index ? 'ring-4 ring-yellow-500' : 'hover:scale-105'
+                                    selectedImageIndex === index ? 'ring-4 ring-amber-500' : 'hover:scale-105'
                                     }`}
                                     onClick={() => setSelectedImageIndex(index)}
                                 >
@@ -255,7 +255,7 @@ const HotelDetail = () => {
                                         className="object-cover"
                                     />
                                     {selectedImageIndex === index && (
-                                        <div className="absolute inset-0 bg-yellow-500/20 flex items-center justify-center">
+                                        <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
                                             <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -271,8 +271,8 @@ const HotelDetail = () => {
                         <div className="lg:col-span-2 space-y-8">
                             {/* Description */}
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Hotel</h2>
-                                <p className="text-gray-700 leading-relaxed">{hotel.description}</p>
+                                <h2 className="text-2xl font-black text-slate-900 mb-4">About This Hotel</h2>
+                                <p className="text-slate-700 leading-relaxed">{hotel.description}</p>
                             </div>
 
                             {/* Amenities */}
@@ -281,7 +281,7 @@ const HotelDetail = () => {
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {hotel.amenities?.map((amenity, index) => {
                                         const getAmenityIcon = (amenityName) => {
-                                            const iconClass = "w-6 h-6 text-gray-700";
+                                            const iconClass = "w-6 h-6 text-slate-700";
                                             switch(amenityName.toLowerCase()) {
                                                 case 'free wifi':
                                                 case 'wifi':
@@ -335,9 +335,9 @@ const HotelDetail = () => {
                                             }
                                         };
                                         return (
-                                            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                            <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                                                 {getAmenityIcon(amenity)}
-                                                <span className="text-gray-700 font-medium">{amenity}</span>
+                                                <span className="text-slate-700 font-medium">{amenity}</span>
                                             </div>
                                         );
                                     })}
@@ -349,16 +349,16 @@ const HotelDetail = () => {
                                 <h3 className="text-xl font-semibold mb-4">Room Types</h3>
                                 <div className="space-y-4">
                                     {hotel.roomTypes?.map((room, index) => (
-                                        <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                        <div key={index} className="ui-card rounded-2xl p-4">
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900">{room.type}</h4>
-                                                    <p className="text-sm text-gray-600">Max {room.maxGuests} guests</p>
-                                                    <p className="text-sm text-gray-600">{room.available} rooms available</p>
+                                                    <h4 className="font-semibold text-slate-900">{room.type}</h4>
+                                                    <p className="text-sm text-slate-600">Max {room.maxGuests} guests</p>
+                                                    <p className="text-sm text-slate-600">{room.available} rooms available</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-2xl font-bold text-yellow-600">${room.price}</p>
-                                                    <p className="text-sm text-gray-600">per night</p>
+                                                    <p className="text-sm text-slate-600">per night</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,17 +369,17 @@ const HotelDetail = () => {
 
                         {/* Booking Form */}
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+                            <div className="ui-card rounded-3xl p-6 sticky top-8">
                                 <div className="text-center mb-6">
-                                    <div className="text-3xl font-bold text-yellow-600 mb-2">
+                                    <div className="text-3xl font-black text-amber-600 mb-2">
                                         ${selectedRoomType ? 
                                             hotel.roomTypes?.find(room => room.type === selectedRoomType)?.price || hotel.offerPrice || hotel.pricePerNight
                                             : hotel.offerPrice || hotel.pricePerNight
                                         }
                                     </div>
-                                    <div className="text-gray-600">per night</div>
+                                    <div className="text-slate-600">per night</div>
                                     {hotel.offerPrice && !selectedRoomType && (
-                                        <div className="text-sm text-gray-500 line-through">
+                                        <div className="text-sm text-slate-500 line-through">
                                             ${hotel.pricePerNight}
                                         </div>
                                     )}
@@ -388,11 +388,11 @@ const HotelDetail = () => {
                                 <form className="space-y-4">
                                     {/* Room Type Selection */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Room Type</label>
                                         <select
                                             value={selectedRoomType}
                                             onChange={(e) => setSelectedRoomType(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                                            className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                                         >
                                             <option value="">Select Room Type</option>
                                             {hotel.roomTypes?.map((room, index) => (
@@ -425,12 +425,12 @@ const HotelDetail = () => {
 
                                     {/* Guests */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Guests</label>
-                                        <div className="flex items-center border border-gray-300 rounded-lg">
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Guests</label>
+                                        <div className="flex items-center border border-slate-300 rounded-xl">
                                             <button
                                                 type="button"
                                                 onClick={() => setBookingData({...bookingData, guests: Math.max(1, bookingData.guests - 1)})}
-                                                className="px-3 py-3 text-gray-600 hover:text-yellow-600 transition-colors"
+                                                className="px-3 py-3 text-slate-600 hover:text-amber-600 transition-colors"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -440,7 +440,7 @@ const HotelDetail = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setBookingData({...bookingData, guests: Math.min(8, bookingData.guests + 1)})}
-                                                className="px-3 py-3 text-gray-600 hover:text-yellow-600 transition-colors"
+                                                className="px-3 py-3 text-slate-600 hover:text-amber-600 transition-colors"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -451,12 +451,12 @@ const HotelDetail = () => {
 
                                     {/* Rooms */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Rooms</label>
-                                        <div className="flex items-center border border-gray-300 rounded-lg">
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Rooms</label>
+                                        <div className="flex items-center border border-slate-300 rounded-xl">
                                             <button
                                                 type="button"
                                                 onClick={() => setBookingData({...bookingData, rooms: Math.max(1, bookingData.rooms - 1)})}
-                                                className="px-3 py-3 text-gray-600 hover:text-yellow-600 transition-colors"
+                                                className="px-3 py-3 text-slate-600 hover:text-amber-600 transition-colors"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -466,7 +466,7 @@ const HotelDetail = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setBookingData({...bookingData, rooms: Math.min(5, bookingData.rooms + 1)})}
-                                                className="px-3 py-3 text-gray-600 hover:text-yellow-600 transition-colors"
+                                                className="px-3 py-3 text-slate-600 hover:text-amber-600 transition-colors"
                                             >
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -477,7 +477,7 @@ const HotelDetail = () => {
 
                                     {/* Guest Information */}
                                     <div className="space-y-3">
-                                        <h4 className="font-medium text-gray-900">Guest Information</h4>
+                                        <h4 className="font-medium text-slate-900">Guest Information</h4>
                                         <input
                                             type="text"
                                             placeholder="First Name"
@@ -486,7 +486,7 @@ const HotelDetail = () => {
                                                 ...bookingData,
                                                 guestInfo: {...bookingData.guestInfo, firstName: e.target.value}
                                             })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                                         />
                                         <input
                                             type="text"
@@ -496,7 +496,7 @@ const HotelDetail = () => {
                                                 ...bookingData,
                                                 guestInfo: {...bookingData.guestInfo, lastName: e.target.value}
                                             })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                                         />
                                         <input
                                             type="email"
@@ -506,7 +506,7 @@ const HotelDetail = () => {
                                                 ...bookingData,
                                                 guestInfo: {...bookingData.guestInfo, email: e.target.value}
                                             })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                                         />
                                         <input
                                             type="tel"
@@ -516,19 +516,19 @@ const HotelDetail = () => {
                                                 ...bookingData,
                                                 guestInfo: {...bookingData.guestInfo, phone: e.target.value}
                                             })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                                         />
                                     </div>
 
                                     {/* Special Requests */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Special Requests</label>
                                         <textarea
                                             placeholder="Any special requests?"
                                             value={bookingData.specialRequests}
                                             onChange={(e) => setBookingData({...bookingData, specialRequests: e.target.value})}
                                             rows={3}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
                                         />
                                     </div>
 
@@ -536,14 +536,14 @@ const HotelDetail = () => {
                                     {bookingStep === 'form' && (
                                         <button 
                                             onClick={handleBooking}
-                                            className="w-full bg-yellow-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-yellow-600 transition"
+                                            className="w-full btn-primary py-3 rounded-xl font-medium"
                                         >
                                             {user ? 'Book Now' : 'Sign In to Book'}
                                         </button>
                                     )}
 
                                     {bookingStep === 'processing' && (
-                                        <div className="w-full bg-yellow-500 text-white py-3 px-6 rounded-lg font-medium text-center">
+                                        <div className="w-full bg-amber-500 text-white py-3 px-6 rounded-xl font-medium text-center">
                                             <div className="flex items-center justify-center gap-2">
                                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                                                 Processing Booking...
@@ -552,7 +552,7 @@ const HotelDetail = () => {
                                     )}
 
                                     {bookingStep === 'confirmed' && (
-                                        <div className="w-full bg-green-500 text-white py-3 px-6 rounded-lg font-medium text-center">
+                                        <div className="w-full bg-emerald-600 text-white py-3 px-6 rounded-xl font-medium text-center">
                                             ✅ Booking Confirmed!
                                         </div>
                                     )}
@@ -565,19 +565,19 @@ const HotelDetail = () => {
 
             {/* Booking Confirmation Modal */}
             {bookingStep === 'confirmed' && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="ui-card rounded-3xl p-8 max-w-md w-full mx-4">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-                            <p className="text-gray-600 mb-6">Your hotel reservation has been successfully created.</p>
-                            <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-                                <h3 className="font-semibold text-gray-900 mb-2">Booking Details</h3>
-                                <div className="space-y-1 text-sm text-gray-600">
+                            <h2 className="text-2xl font-black text-slate-900 mb-2">Booking Confirmed!</h2>
+                            <p className="text-slate-600 mb-6">Your hotel reservation has been successfully created.</p>
+                            <div className="bg-slate-50 rounded-xl p-4 mb-6 text-left">
+                                <h3 className="font-semibold text-slate-900 mb-2">Booking Details</h3>
+                                <div className="space-y-1 text-sm text-slate-600">
                                     <p><span className="font-medium">Booking ID:</span> {bookingId}</p>
                                     <p><span className="font-medium">Hotel:</span> {hotel?.name}</p>
                                     <p><span className="font-medium">Check-in:</span> {new Date(bookingData.checkInDate).toLocaleDateString()}</p>
@@ -589,13 +589,13 @@ const HotelDetail = () => {
                             <div className="flex gap-3">
                                 <button 
                                     onClick={() => { setBookingStep('form'); setBookingId(null); }} 
-                                    className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium hover:bg-gray-300 transition"
+                                    className="flex-1 btn-ghost py-2 px-4 rounded-xl"
                                 >
                                     Book Another
                                 </button>
                                 <button 
                                     onClick={() => window.location.href = '/my-bookings'} 
-                                    className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-yellow-600 transition"
+                                    className="flex-1 btn-primary py-2 px-4 rounded-xl"
                                 >
                                     View Bookings
                                 </button>
@@ -619,3 +619,5 @@ const HotelDetail = () => {
 };
 
 export default HotelDetail;
+
+
