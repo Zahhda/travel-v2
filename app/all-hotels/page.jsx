@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SidebarFilter from "@/components/SidebarFilter";
 import { useAppContext } from "@/context/AppContext";
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 // Ensure proper rendering
 export const dynamic = 'auto';
@@ -17,70 +17,98 @@ const AllHotels = () => {
     rating: '',
     location: ''
   });
+  const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
+
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      priceRange: '',
+      rating: '',
+      location: ''
+    });
+  };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const location = urlParams.get('location');
-    const checkIn = urlParams.get('checkIn');
-    const checkOut = urlParams.get('checkOut');
-    const guests = urlParams.get('guests');
-    const rooms = urlParams.get('rooms');
 
     if (location) {
       setFilters(prev => ({ ...prev, location }));
     }
   }, []);
 
-  const filteredHotels = hotels.filter(hotel => {
-    // Category filter
-    if (filters.category && !hotel.category.toLowerCase().includes(filters.category.toLowerCase())) {
-      return false;
-    }
+  const filteredHotels = useMemo(() => {
+    return hotels.filter(hotel => {
+      const category = (hotel.category || '').toLowerCase();
+      const location = (hotel.location || '').toLowerCase();
+      const city = (hotel.city || '').toLowerCase();
+      const country = (hotel.country || '').toLowerCase();
+      const amenities = hotel.amenities || [];
+      const roomTypes = hotel.roomTypes || [];
+      const rating = Number(hotel.rating) || 0;
 
-    // Location filter
-    if (filters.location && 
-        !hotel.location.toLowerCase().includes(filters.location.toLowerCase()) && 
-        !hotel.city.toLowerCase().includes(filters.location.toLowerCase()) &&
-        !hotel.country.toLowerCase().includes(filters.location.toLowerCase())) {
-      return false;
-    }
-
-    // Rating filter
-    if (filters.rating && hotel.rating < parseFloat(filters.rating)) {
-      return false;
-    }
-
-    // Price range filter
-    if (filters.priceRange && filters.priceRange.length === 2) {
-      const [minPrice, maxPrice] = filters.priceRange;
-      if (hotel.pricePerNight < minPrice || hotel.pricePerNight > maxPrice) {
+      if (filters.category && !category.includes(filters.category.toLowerCase())) {
         return false;
       }
-    }
 
-    // Amenities filter
-    if (filters.amenities && filters.amenities.length > 0) {
-      const hasAllAmenities = filters.amenities.every(amenity => 
-        hotel.amenities && hotel.amenities.includes(amenity)
-      );
-      if (!hasAllAmenities) {
+      if (filters.location &&
+          !location.includes(filters.location.toLowerCase()) &&
+          !city.includes(filters.location.toLowerCase()) &&
+          !country.includes(filters.location.toLowerCase())) {
         return false;
       }
-    }
 
-    // Room types filter
-    if (filters.roomTypes && filters.roomTypes.length > 0) {
-      const hasMatchingRoomType = hotel.roomTypes && hotel.roomTypes.some(room => 
-        filters.roomTypes.includes(room.type)
-      );
-      if (!hasMatchingRoomType) {
+      if (filters.rating && rating < parseFloat(filters.rating)) {
         return false;
       }
+
+      if (filters.priceRange && filters.priceRange.length === 2) {
+        const [minPrice, maxPrice] = filters.priceRange;
+        if (hotel.pricePerNight < minPrice || hotel.pricePerNight > maxPrice) {
+          return false;
+        }
+      }
+
+      if (filters.amenities?.length > 0) {
+        const hasAllAmenities = filters.amenities.every(amenity => amenities.includes(amenity));
+        if (!hasAllAmenities) {
+          return false;
+        }
+      }
+
+      if (filters.roomTypes?.length > 0) {
+        const hasMatchingRoomType = roomTypes.some(room => filters.roomTypes.includes(room.type));
+        if (!hasMatchingRoomType) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [filters, hotels]);
+
+  const sortedHotels = useMemo(() => {
+    const list = [...filteredHotels];
+
+    if (sortBy === 'price-low') {
+      return list.sort((a, b) => a.offerPrice - b.offerPrice);
     }
 
-    return true;
-  });
+    if (sortBy === 'price-high') {
+      return list.sort((a, b) => b.offerPrice - a.offerPrice);
+    }
+
+    if (sortBy === 'rating') {
+      return list.sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0));
+    }
+
+    if (sortBy === 'reviews') {
+      return list.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
+    }
+
+    return list;
+  }, [filteredHotels, sortBy]);
 
   const handleApplyFilters = (newFilters) => {
     setFilters(newFilters);
@@ -97,16 +125,31 @@ const AllHotels = () => {
               <div>
                 <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">All Hotels</h1>
                 <p className="text-lg text-gray-600">
-                  {filteredHotels.length} hotels found
+                  {sortedHotels.length} hotels found
                 </p>
               </div>
-              <div className="flex gap-3">
+
+              <div className="flex gap-3 items-center flex-wrap">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className="lg:hidden bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-xl transition-all duration-300"
                 >
                   {showFilters ? 'Hide Filters' : 'Show Filters'}
                 </button>
+                <label className="bg-white px-4 py-3 rounded-xl border border-gray-200 text-sm">
+                  <span className="text-gray-600 mr-2">Sort:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(event) => setSortBy(event.target.value)}
+                    className="bg-transparent outline-none"
+                  >
+                    <option value="featured">Featured</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="reviews">Most Reviewed</option>
+                  </select>
+                </label>
                 <button
                   onClick={() => handleApplyFilters(filters)}
                   className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -120,7 +163,7 @@ const AllHotels = () => {
           {/* Mobile Sidebar Filter */}
           {showFilters && (
             <div className="lg:hidden mb-6">
-              <SidebarFilter 
+              <SidebarFilter
                 filters={filters}
                 setFilters={setFilters}
                 onApplyFilters={handleApplyFilters}
@@ -131,46 +174,22 @@ const AllHotels = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar Filter - Desktop */}
             <div className="hidden lg:block">
-              <SidebarFilter 
+              <SidebarFilter
                 filters={filters}
                 setFilters={setFilters}
                 onApplyFilters={handleApplyFilters}
               />
             </div>
 
-            {/* Mobile Filter Toggle */}
-            <div className="lg:hidden mb-6">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 bg-white px-4 py-3 rounded-xl shadow-md border border-gray-200"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                <span className="font-medium">Filters</span>
-              </button>
-            </div>
-
-            {/* Mobile Sidebar Filter */}
-            {showFilters && (
-              <div className="lg:hidden mb-6">
-                <SidebarFilter 
-                  filters={filters}
-                  setFilters={setFilters}
-                  onApplyFilters={handleApplyFilters}
-                />
-              </div>
-            )}
-
             {/* Hotel Grid */}
             <div className="flex-1">
-              {filteredHotels.length === 0 ? (
+              {sortedHotels.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-6xl mb-4">🏨</div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">No hotels found</h3>
                   <p className="text-gray-600 mb-6">Try adjusting your filters or search criteria</p>
                   <button
-                    onClick={() => setFilters({ category: '', priceRange: '', rating: '', location: '' })}
+                    onClick={clearFilters}
                     className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                   >
                     Clear Filters
@@ -178,7 +197,7 @@ const AllHotels = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredHotels.map((hotel, index) => (
+                  {sortedHotels.map((hotel, index) => (
                     <HotelCard key={index} hotel={hotel} />
                   ))}
                 </div>

@@ -1,13 +1,9 @@
-import connectDB from '@/config/db'
-import Hotel from '@/models/Product'
+import { getHotels } from '@/database'
 import { NextResponse } from 'next/server'
 
 export async function GET(request) {
     try {
-
-        await connectDB()
-
-        const hotels = await Hotel.find({})
+        const hotels = getHotels()
         return NextResponse.json({ success:true, hotels })
 
     } catch (error) {

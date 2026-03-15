@@ -4,31 +4,16 @@ import { useAppContext } from '@/context/AppContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
-import axios from 'axios';
 
 const MyBookings = () => {
-  const { user } = useAppContext();
-  const [bookings, setBookings] = useState([]);
+  const { user, bookings } = useAppContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      fetchBookings();
-    }
-  }, [user]);
-
-  const fetchBookings = async () => {
-    try {
-      const { data } = await axios.get(`/api/booking/list?userId=${user.id}`);
-      if (data.success) {
-        setBookings(data.bookings);
-      }
-    } catch (error) {
-      console.error('Error fetching bookings:', error);
-    } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const getStatusColor = (status) => {
     switch (status) {

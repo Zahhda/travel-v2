@@ -1,9 +1,9 @@
 'use client'
 import { useAuth, useUser } from "@clerk/nextjs";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { getHotels, findHotel } from "@/database";
 
 export const AppContext = createContext();
 
@@ -22,48 +22,51 @@ export const AppContextProvider = (props) => {
     const [hotels, setHotels] = useState([])
     const [userData, setUserData] = useState(false)
     const [isHotelManager, setIsHotelManager] = useState(false)
-    const [bookings, setBookings] = useState({})
+    const [bookings, setBookings] = useState([])
     const [cartItems, setCartItems] = useState({})
-
-    const fetchHotelData = async () => {
+    const loadDemoBookings = (storageKey) => {
+        if (typeof window === "undefined") return []
         try {
-            const {data} = await axios.get('/api/hotel/list')
-
-            if (data.success) {
-                setHotels(data.hotels)
-            } else {
-                toast.error(data.message)
-            }
-
-        } catch (error) {
-            toast.error(error.message)
+            const rawBookings = localStorage.getItem(storageKey)
+            if (!rawBookings) return []
+            const parsed = JSON.parse(rawBookings)
+            return Array.isArray(parsed) ? parsed : []
+        } catch {
+            return []
         }
     }
 
+    const fetchHotelData = async () => {
+        const demoHotels = getHotels()
+        setHotels(demoHotels)
+    }
+
     const fetchUserData = async () => {
-        try {
-            if (!user) {
-                return;
-            }
-
-            if (user.publicMetadata?.role === 'seller' || user.publicMetadata?.role === 'hotel_manager') {
-                setIsHotelManager(true)
-            }
-
-            const token = await getToken()
-
-            const { data } = await axios.get('/api/user/data', { headers: { Authorization: `Bearer ${token}` } })
-
-            if (data.success) {
-                setUserData(data.user)
-                setBookings(data.user.bookings)
-            } else {
-                console.error('User data fetch failed:', data.message)
-            }
-
-        } catch (error) {
-            console.error('Error fetching user data:', error)
+        if (!user) {
+            setIsHotelManager(false)
+            setUserData(false)
+            return;
         }
+
+        setUserData({
+            id: user.id,
+            email: user.primaryEmailAddress?.emailAddress,
+            role: user.publicMetadata?.role || "guest"
+        })
+
+        if (user.publicMetadata?.role === 'seller' || user.publicMetadata?.role === 'hotel_manager') {
+            setIsHotelManager(true)
+        } else {
+            setIsHotelManager(false)
+        }
+    }
+
+    const getBookingStorageKey = (userId = user?.id) => `goluxus-demo-bookings-${userId || "guest"}`
+
+    const saveBookings = (nextBookings) => {
+        const key = getBookingStorageKey()
+        if (typeof window === "undefined") return
+        localStorage.setItem(key, JSON.stringify(nextBookings))
     }
 
     const createBooking = async (hotelId, bookingData) => {
@@ -75,60 +78,73 @@ export const AppContextProvider = (props) => {
             throw new Error('User not logged in')
         }
 
-        try {
-            const token = await getToken()
-            const { data } = await axios.post('/api/booking/create', {
-                userId: user.id,
-                hotelId,
-                ...bookingData
-            }, {headers:{Authorization: `Bearer ${token}`}} )
-            
-            if (data.success) {
-                toast.success('Booking created successfully')
-                return {
-                    booking: data.booking,
-                    bookingId: data.bookingId,
-                    message: data.message
-                }
-            } else {
-                toast.error(data.message)
-                throw new Error(data.message)
-            }
-        } catch (error) {
-            console.error('Booking creation error:', error)
-            toast.error(error.message)
-            throw error
+        const hotel = findHotel(hotelId) || hotels.find((item) => item.slug === hotelId)
+        if (!hotel) {
+            const message = "Hotel not found in demo database";
+            toast.error(message)
+            throw new Error(message)
+        }
+
+        const booking = {
+            _id: `BK-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
+            bookingReference: `BK-${Date.now()}-${Math.random().toString(36).slice(2, 5).toUpperCase()}`,
+            userId: user.id,
+            hotel: hotel._id,
+            hotelDetails: {
+                _id: hotel._id,
+                name: hotel.name,
+                location: hotel.location,
+                images: hotel.images
+            },
+            status: "Confirmed",
+            paymentStatus: "Completed",
+            roomType: bookingData.roomType,
+            checkInDate: bookingData.checkInDate,
+            checkOutDate: bookingData.checkOutDate,
+            guests: bookingData.guests,
+            rooms: bookingData.rooms,
+            totalNights: bookingData.totalNights,
+            amount: bookingData.amount,
+            baseAmount: bookingData.baseAmount,
+            tax: bookingData.tax,
+            guestInfo: bookingData.guestInfo,
+            specialRequests: bookingData.specialRequests || "",
+            hotelName: hotel.name,
+            date: new Date().toISOString()
+        }
+
+        setBookings(prev => {
+            const next = [booking, ...(prev || [])]
+            saveBookings(next)
+            return next
+        })
+
+        toast.success('Demo booking created successfully')
+        return {
+            booking,
+            bookingId: booking._id,
+            message: "Demo booking created successfully"
         }
     }
 
     const updateBooking = async (bookingId, updateData) => {
 
-        try {
-            const token = await getToken()
-            const { data } = await axios.post('/api/booking/update', {
-                bookingId,
-                ...updateData
-            }, {headers:{Authorization: `Bearer ${token}`}} )
-            
-            if (data.success) {
-                toast.success('Booking updated successfully')
-                return data.booking
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
-        }
+        const nextBookings = (bookings || []).map(booking =>
+            booking._id === bookingId ? { ...booking, ...updateData } : booking
+        )
+        setBookings(nextBookings)
+        saveBookings(nextBookings)
+        toast.success('Booking updated successfully')
+        return nextBookings.find((booking) => booking._id === bookingId)
     }
 
     const getBookingCount = () => {
-        return Object.keys(bookings).length;
+        return (bookings || []).length;
     }
 
     const getBookingAmount = () => {
         let totalAmount = 0;
-        for (const bookingId in bookings) {
-            let booking = bookings[bookingId];
+        for (const booking of bookings || []) {
             if (booking.amount) {
                 totalAmount += booking.amount;
             }
@@ -175,8 +191,12 @@ export const AppContextProvider = (props) => {
     }, [])
 
     useEffect(() => {
+        const storageKey = getBookingStorageKey()
         if (user) {
             fetchUserData()
+            setBookings(loadDemoBookings(storageKey))
+        } else {
+            setBookings([])
         }
     }, [user])
 
