@@ -12,12 +12,19 @@ async function connectDB() {
         return cached.conn
     } 
 
+    const mongoDbUri = process.env.MONGODB_URI
+
+    if (!mongoDbUri) {
+        console.warn('MONGODB_URI is not set. Demo mode: skipping database connection.')
+        return null
+    }
+
     if (!cached.promise) {
         const opts = {
             bufferCommands:false
         }
 
-        cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/quickcart`,opts).then( mongoose => {
+        cached.promise = mongoose.connect(`${mongoDbUri}/quickcart`,opts).then( mongoose => {
             return mongoose
         })
 
